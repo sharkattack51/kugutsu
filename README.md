@@ -1,7 +1,7 @@
 kugutsu
 ===
 
-kugutsu is input automation server.
+kugutsu is input Mouse/Keyboard automation server.
 
 ## Options
 
