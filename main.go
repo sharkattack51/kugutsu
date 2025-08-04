@@ -117,7 +117,7 @@ func Automation(msg string) {
 		return
 	}
 
-	cmd, pos, keyStr, addKeys, keyHold, err := ParseCommand(msgs)
+	cmd, pos, keyStr, spKeys, keyHold, err := ParseCommand(msgs)
 	if err != nil {
 		log.Println(err)
 		return
@@ -133,15 +133,15 @@ func Automation(msg string) {
 		robotgo.Click("left", true)
 
 	case COMMAND_KEY:
-		if len(keyStr) == 1 {
+		if _, ok := robotgo.Keycode[keyStr]; ok {
 			if keyHold > 0 {
 				st := time.Now()
 				for time.Since(st) < (time.Duration(keyHold) * time.Second) {
-					robotgo.KeyDown(keyStr, addKeys...)
+					robotgo.KeyDown(keyStr, spKeys...)
 				}
-				robotgo.KeyUp(keyStr, addKeys...)
+				robotgo.KeyUp(keyStr, spKeys...)
 			} else {
-				robotgo.KeyTap(keyStr, addKeys...)
+				robotgo.KeyTap(keyStr, spKeys...)
 			}
 		} else {
 			robotgo.TypeStr(keyStr)
@@ -159,12 +159,12 @@ func ParseCommand(msg []string) (string, [2]int, string, []interface{}, int, err
 	var cmd string
 	var pos [2]int
 	var keyStr string
-	var addKeys []interface{}
+	var spKeys []interface{}
 	var keyHold int
 	var err error
 
 	if len(msg) == 0 {
-		return cmd, pos, keyStr, addKeys, keyHold, errors.New("parse comannd error")
+		return cmd, pos, keyStr, spKeys, keyHold, errors.New("parse comannd error")
 	}
 	cmd = strings.ToUpper(msg[0])
 
@@ -177,10 +177,10 @@ func ParseCommand(msg []string) (string, [2]int, string, []interface{}, int, err
 		} else if len(msg) == 3 {
 			var x, y int
 			if x, err = strconv.Atoi(msg[1]); err != nil {
-				return cmd, pos, keyStr, addKeys, keyHold, errors.New("parse comannd error")
+				return cmd, pos, keyStr, spKeys, keyHold, errors.New("parse comannd error")
 			}
 			if y, err = strconv.Atoi(msg[2]); err != nil {
-				return cmd, pos, keyStr, addKeys, keyHold, errors.New("parse comannd error")
+				return cmd, pos, keyStr, spKeys, keyHold, errors.New("parse comannd error")
 			}
 			pos = [2]int{x, y}
 		}
@@ -196,31 +196,31 @@ func ParseCommand(msg []string) (string, [2]int, string, []interface{}, int, err
 				for i := 1; i < len(strs); i++ {
 					switch strings.ToUpper(strs[i]) {
 					case "SHIFT":
-						addKeys = append(addKeys, "shift")
+						spKeys = append(spKeys, "shift")
 
 					case "LSHIFT":
-						addKeys = append(addKeys, "lshift")
+						spKeys = append(spKeys, "lshift")
 
 					case "RSHIFT":
-						addKeys = append(addKeys, "rshift")
+						spKeys = append(spKeys, "rshift")
 
 					case "ALT":
-						addKeys = append(addKeys, "alt")
+						spKeys = append(spKeys, "alt")
 
 					case "LALT":
-						addKeys = append(addKeys, "lalt")
+						spKeys = append(spKeys, "lalt")
 
 					case "RALT":
-						addKeys = append(addKeys, "ralt")
+						spKeys = append(spKeys, "ralt")
 
 					case "CTRL":
-						addKeys = append(addKeys, "ctrl")
+						spKeys = append(spKeys, "ctrl")
 
 					case "LCTRL":
-						addKeys = append(addKeys, "lctrl")
+						spKeys = append(spKeys, "lctrl")
 
 					case "RCTRL":
-						addKeys = append(addKeys, "rctrl")
+						spKeys = append(spKeys, "rctrl")
 
 					default:
 					}
@@ -231,13 +231,13 @@ func ParseCommand(msg []string) (string, [2]int, string, []interface{}, int, err
 		if len(msg) >= 3 {
 			var t int
 			if t, err = strconv.Atoi(msg[2]); err != nil {
-				return cmd, pos, keyStr, addKeys, keyHold, errors.New("parse comannd error")
+				return cmd, pos, keyStr, spKeys, keyHold, errors.New("parse comannd error")
 			}
 			keyHold = t
 		}
 	}
 
-	return cmd, pos, keyStr, addKeys, keyHold, nil
+	return cmd, pos, keyStr, spKeys, keyHold, nil
 }
 
 func GetHostIP() string {
