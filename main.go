@@ -204,17 +204,23 @@ func ParseCommand(msg []string) (string, [2]int, string, []interface{}, int, err
 					case "RSHIFT":
 						addKeys = append(addKeys, "rshift")
 
+					case "ALT":
+						addKeys = append(addKeys, "alt")
+
+					case "LALT":
+						addKeys = append(addKeys, "lalt")
+
+					case "RALT":
+						addKeys = append(addKeys, "ralt")
+
 					case "CTRL":
-						addKeys = append(addKeys, "control")
+						addKeys = append(addKeys, "ctrl")
 
 					case "LCTRL":
-						addKeys = append(addKeys, "lcontrol")
+						addKeys = append(addKeys, "lctrl")
 
 					case "RCTRL":
-						addKeys = append(addKeys, "rcontrol")
-
-					case "ESC":
-						addKeys = append(addKeys, "escape")
+						addKeys = append(addKeys, "rctrl")
 
 					default:
 					}
